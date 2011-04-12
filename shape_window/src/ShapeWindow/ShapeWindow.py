@@ -1,10 +1,10 @@
 import roslib; roslib.load_manifest('shape_window')
-import Geometry2D
+from shape_window import Geometry2D
 import cv
 import thread
 import time
 import math
-import ShapeWindowUtils
+from shape_window import ShapeWindowUtils
 
 ## The ShapeWindow is a simple HighGUI-based viewer which can keep track of shapes, as defined in the Geometry2D package. Used by the FoldingGUI
 class ShapeWindow:

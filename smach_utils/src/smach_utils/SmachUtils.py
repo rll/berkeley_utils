@@ -1,6 +1,6 @@
 import roslib
 roslib.load_manifest("pr2_simple_arm_motions")
-import GripUtils
+from pr2_simple_arm_motions import GripUtils
 import StanceUtils
 from smach import State, StateMachine
 from smach_ros import SimpleActionState
