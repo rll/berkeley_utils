@@ -1,0 +1,20 @@
+<package>
+  <description brief="smach_utils">
+
+     smach_utils
+
+  </description>
+  <author>Stephen Miller</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/smach_utils</url>
+  <depend package="rospy"/>
+  <depend package="actionlib"/>
+  <depend package="pr2_simple_motions_apps"/>
+  <depend package="pr2_simple_arm_motions"/>
+  <depend package="smach"/>
+  <depend package="smach_ros"/>
+  <depend package="geometry_msgs"/>
+</package>
+
+

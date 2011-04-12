@@ -1,0 +1,11 @@
+<stack>
+	<description brief = "berkeley_utils">
+  This stack contains everything previously put in "misc_packages". Various utility packages we've made that seemed relevant.
+  </description>
+	<author>Maintained by Stephen Miller</author>
+	<license>BSD</license>
+	<review status="unreviewed" notes=""/>
+	<url></url>
+	
+	<depend stack="ros" />
+</stack>

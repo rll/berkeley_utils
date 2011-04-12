@@ -1,0 +1,16 @@
+<package>
+  <description brief="shape_window">
+
+     shape_window
+
+  </description>
+  <author>Stephen Miller</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/shape_window</url>
+  <depend package="rospy"/>
+  <depend package="opencv2"/>
+
+</package>
+
+

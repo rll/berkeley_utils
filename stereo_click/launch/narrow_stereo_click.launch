@@ -1,0 +1,18 @@
+<launch>
+	<node pkg="stereo_click" type="click_window.py" name="click_window_right">
+		<param name="cam" value="/narrow_stereo/left" />
+		<param name="output" value="clicks_narrow_stereo_left" />
+	</node>
+
+	<node pkg="stereo_click" type="click_window.py" name="click_window_left">
+		<param name="cam" value="/narrow_stereo/right" />
+		<param name="output" value="clicks_narrow_stereo_right" />
+	</node>
+
+	<node pkg="stereo_click" type="stereo_converter.py" name="stereo_converter">
+		<param name="input1" value="clicks_narrow_stereo_left" />
+		<param name="input2" value="clicks_narrow_stereo_right" />
+		<param name="output" value="stereo_points_3d" />
+		<param name="output_frame" value="base_footprint" />
+	</node>
+</launch>

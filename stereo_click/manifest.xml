@@ -1,0 +1,23 @@
+<package>
+  <description brief="stereo_click">
+
+     stereo_click
+
+  </description>
+  <author>Stephen Miller</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/stereo_click</url>
+  <depend package="rospy"/>
+  <depend package="opencv2"/>
+  <depend package="cv_bridge"/>
+  <depend package="sensor_msgs"/>
+  <depend package="std_msgs"/>
+  <depend package="std_srvs"/>
+  <depend package="tf"/>
+  <depend package="geometry_msgs"/>
+  <depend package="image_geometry"/>
+
+</package>
+
+

@@ -1,0 +1,4 @@
+stereo_click/ClickPoint click_point_left
+stereo_click/ClickPoint click_point_right
+---
+geometry_msgs/PointStamped pt3d
