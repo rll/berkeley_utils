@@ -11,6 +11,7 @@ SUCCESS = 'success'
 FAILURE = 'failure'
 
 DEFAULT_OUTCOMES = [SUCCESS, FAILURE]
+MINIMUM_SHAKE_WIDTH = 0.4
 
 class StateMachineAddition(object):
     def __init__(self, title, state, transitions=None, remapping=None):
@@ -154,6 +155,7 @@ class SmoothOnTable(SuccessFailureState):
 
         initial_separation = 0.11
         if self.arm=="b":
+            rospy.loginfo('Self.arm is b')
             outcome = SUCCESS
             #Put arms together, with a gap of initial_separation between grippers
             if not GripUtils.go_to_pts(point_l=self.location,grip_r=True, grip_l=True, point_r=self.location,
@@ -162,12 +164,14 @@ class SmoothOnTable(SuccessFailureState):
                     roll_r=pi/2,yaw_r=0,pitch_r=-pi/2,y_offset_r=-1*initial_separation/2.0,z_offset_r=0.05
                     ,link_frame_r="r_wrist_back_frame",dur=4.0):
                 outcome = FAILURE
+            rospy.loginfo('Success is %s', outcome==SUCCESS)
             if not GripUtils.go_to_pts(point_l=self.location,grip_r=True, grip_l=True, point_r=self.location,
                     roll_l=pi/2,yaw_l=0,pitch_l=-pi/2,y_offset_l=initial_separation/2.0,z_offset_l=-0.03, 
                     link_frame_l="l_wrist_back_frame",
                     roll_r=pi/2,yaw_r=0,pitch_r=-pi/2,y_offset_r=-1*initial_separation/2.0,z_offset_r=-0.03, 
                     link_frame_r="r_wrist_back_frame",dur=2.0):
                 outcome = FAILURE
+            rospy.loginfo('Success is %s', outcome==SUCCESS)
             if not GripUtils.go_to_pts(point_l=self.location,grip_r=True, grip_l=True, point_r=self.location,
                     roll_l=pi/2,yaw_l=0,pitch_l=-pi/2,
                     y_offset_l=(self.distance+initial_separation)/2.0, z_offset_l=-0.03,
@@ -176,6 +180,7 @@ class SmoothOnTable(SuccessFailureState):
                     y_offset_r=-1*(self.distance+initial_separation)/2.0, z_offset_r=-0.03,
                     link_frame_r="r_wrist_back_frame",dur=2.0):
                 outcome = FAILURE
+            rospy.loginfo('Success is %s', outcome==SUCCESS)
             GripUtils.recall_arm("b")
             return outcome
         else:
@@ -184,18 +189,22 @@ class SmoothOnTable(SuccessFailureState):
                 y_multiplier = -1
             else:
                 y_multiplier = 1
+            rospy.loginfo('arm is r, y multiplier is %s', y_multiplier)
             if not GripUtils.go_to_pt(point=self.location,grip=True,roll=pi/2,yaw=0,pitch=-pi/2,
                     z_offset=0.05,arm=self.arm,
-                    link_frame="%s_wrist_back_frame"%self.arm,dur=4.0):
+                    link_frame="%s_wrist_back_frame"%self.arm,dur=4.0, verbose=True):
                 return FAILURE
+            rospy.loginfo('Step 2')
             if not GripUtils.go_to_pt(point=self.location,grip=True,roll=pi/2,yaw=0,pitch=-pi/2,
                     z_offset=-0.01,arm=self.arm,
-                    link_frame="%s_wrist_back_frame"%self.arm,dur=2.0):
+                    link_frame="%s_wrist_back_frame"%self.arm,dur=2.0, verbose=True):
                 return FAILURE
+            rospy.loginfo('Step 3')
             if not GripUtils.go_to_pt(point=self.location,grip=True,roll=pi/2,yaw=0,pitch=-pi/2,
                     y_offset=y_multiplier*self.distance,z_offset=-0.01,arm=self.arm,
-                    link_frame="%s_wrist_back_frame"%self.arm,dur=2.0):
+                    link_frame="%s_wrist_back_frame"%self.arm,dur=2.0, verbose=True):
                 return FAILURE
+            rospy.loginfo('Step 4.  Done!')
         return SUCCESS    
 
 class SpreadOut(SuccessFailureState):
@@ -448,8 +457,8 @@ class ShakeBothArms(SuccessFailureState):
 
         cloth_width     = userdata.cloth_width*.85
 
-        if cloth_width < 0.5:
-            rospy.logwarn("Cannot shake at less than 0.5m apart; tried to do %d" % cloth_width)
+        if cloth_width < MINIMUM_SHAKE_WIDTH:
+            rospy.logwarn("Cannot shake at less than %s m apart; tried to do %d" % (MINIMUM_SHAKE_WIDTH, cloth_width))
             return FAILURE
 
         forward_amount  = 0.45
