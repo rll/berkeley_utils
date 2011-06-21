@@ -51,6 +51,12 @@ class SimpleTransformListener(TransformListener):
         quat.header.stamp = now
         return TransformListener.transformQuaternion(self,target_frame,quat)
 
+    @catchTFErrors(5)
+    def transformFrames(self, target_frame, source_frame):
+        now = rospy.Time.now()
+        self.waitForTransform(target_frame, source_frame, now, rospy.Duration(5.0))
+        return self.lookupTransform(target_frame, source_frame, now)
+
 """
 Utility functions for using points/poses
 """
