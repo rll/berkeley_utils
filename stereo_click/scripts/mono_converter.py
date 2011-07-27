@@ -172,7 +172,7 @@ def main(args):
     
     rospy.init_node("stereo_converter")
     cptopic = rospy.get_param('~input',"input_default")
-    table_height = rospy.get_param('~table_height',0.895)
+    table_height = rospy.get_param('table_height',0.895)
     outputname = rospy.get_param('~output',"output_defalut")
     outputframe = rospy.get_param('~output_frame',"output_frame_default")
     converter = MonoConverter(cptopic=cptopic,table_height=table_height,outputname=outputname,outputframe=outputframe)
