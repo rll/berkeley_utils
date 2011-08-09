@@ -2,9 +2,12 @@
 import roslib
 roslib.load_manifest("rll_utils")
 import rospy
+from tf.transformations import quaternion_multiply, quaternion_about_axis
 from visualization_msgs.msg import Marker
 from geometry_msgs.msg import *
-from rll_utils.TFUtils import rpy_to_quaternion
+from rll_utils.TFUtils import rpy_to_quaternion, quaternion_to_array,\
+        array_to_quaternion
+from math import pi
 
 def place_marker(point, pub, _id=0, _type=Marker.CUBE, ns='basic_shapes',\
         r=0, g=1, b=0, xscale=.03, yscale=.03, zscale=.03,\
@@ -30,7 +33,7 @@ def place_marker(point, pub, _id=0, _type=Marker.CUBE, ns='basic_shapes',\
     marker.text = text
     marker.lifetime = rospy.Duration()
     pub.publish(marker)
-    rospy.loginfo("Placed a marker")
+#    rospy.loginfo("Placed a marker")
 
 def place_arrow(point, pub, _id, ns='basic_shapes', rgb=(0, 1, 0), scale=(0.1, 0.1, 0.1), orientation=Quaternion(0,0,0,1),text=''):
     place_marker(point, pub, _id, Marker.ARROW, ns=ns, r=rgb[0], g=rgb[1], b=rgb[2],\
@@ -42,10 +45,27 @@ def place_arrow(point, pub, _id, ns='basic_shapes', rgb=(0, 1, 0), scale=(0.1, 0
 
 def draw_trajectory():
     """
-    Draw arm and base trajectories to visualize action and confirm safety
+    #TODO: Draw arm and base trajectories to visualize action and confirm safety
     before execution.
     """
     pass
+
+def draw_axes(pub, id, ns, pose_stamped, scale=(0.05, 0.1, 0.1), text=""):
+    ps = PointStamped()
+    ps.header = pose_stamped.header
+    ps.point = pose_stamped.pose.position
+    q_x = quaternion_to_array(pose_stamped.pose.orientation)
+    q_y = quaternion_multiply(q_x, quaternion_about_axis(pi/2, (0, 1, 0)))
+    q_z = quaternion_multiply(q_x, quaternion_about_axis(pi/2, (0, 0, 1)))
+    if id > 999:
+        rospy.logerr('Currently can\'t visualize markers with id > 999.')
+        return
+    place_arrow(ps, pub, id, ns, (1, 0, 0),\
+            scale, array_to_quaternion(q_x))
+    place_arrow(ps, pub, id + 1000, ns, (0, 1, 0),\
+            scale, array_to_quaternion(q_y))
+    place_arrow(ps, pub, id + 2000, ns, (0, 0, 1),\
+            scale, array_to_quaternion(q_z), text=text)
 
 def place_lines(points, pub, _id=0, r = 0, g = 1, b = 0, xscale = .02, yscale=.02, zscale = .02):
     """
