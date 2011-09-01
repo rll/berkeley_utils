@@ -10,7 +10,7 @@ from rll_utils.TFUtils import rpy_to_quaternion, quaternion_to_array,\
 from math import pi
 
 def place_marker(point, pub, _id=0, _type=Marker.CUBE, ns='basic_shapes',\
-        r=0, g=1, b=0, xscale=.03, yscale=.03, zscale=.03,\
+        r=0, g=1, b=0, a=1, xscale=.03, yscale=.03, zscale=.03,\
         orientation=Quaternion(0,0,0,1), text=''):
     """
     Publishes a visualization marker for Rviz. The publisher needs to be supplied just because I've noticed
@@ -28,7 +28,7 @@ def place_marker(point, pub, _id=0, _type=Marker.CUBE, ns='basic_shapes',\
     marker.color.r = r
     marker.color.g = g
     marker.color.b = b
-    marker.color.a = 1
+    marker.color.a = a
     marker.id = _id
     marker.text = text
     marker.lifetime = rospy.Duration()
