@@ -123,7 +123,7 @@ class Smooth(SuccessFailureState):
             if self.arm=="r":
                 y_multiplier = -1
             else:
-                y_multiplier = 1
+                y_multiplier = 1.0
             if not GripUtils.go_to_pt(point=self.location,grip=True,roll=pi/2,yaw=0,pitch=-pi/2,
                     z_offset=0.05,arm=self.arm,
                     link_frame="%s_wrist_back_frame"%self.arm,dur=4.0):
@@ -133,7 +133,7 @@ class Smooth(SuccessFailureState):
                     link_frame="%s_wrist_back_frame"%self.arm,dur=2.0):
                 return FAILURE
             if not GripUtils.go_to_pt(point=self.location,grip=True,roll=pi/2,yaw=0,pitch=-pi/2,
-                    y_offset=y_multiplier*self.distance,z_offset=-0.01,arm=self.arm,
+                    y_offset=y_multiplier*self.distance,z_offset=-0.00,arm=self.arm,
                     link_frame="%s_wrist_back_frame"%self.arm,dur=2.0):
                 return FAILURE
         return SUCCESS
@@ -164,23 +164,23 @@ class SmoothOnTable(SuccessFailureState):
                     roll_r=pi/2,yaw_r=0,pitch_r=-pi/2,y_offset_r=-1*initial_separation/2.0,z_offset_r=0.05
                     ,link_frame_r="r_wrist_back_frame",dur=4.0):
                 outcome = FAILURE
-            rospy.loginfo('Success is %s', outcome==SUCCESS)
+            rospy.loginfo('Smooth on table goto 1: Success is %s', outcome==SUCCESS)
             if not GripUtils.go_to_pts(point_l=self.location,grip_r=True, grip_l=True, point_r=self.location,
-                    roll_l=pi/2,yaw_l=0,pitch_l=-pi/2,y_offset_l=initial_separation/2.0,z_offset_l=-0.03, 
+                    roll_l=pi/2,yaw_l=0,pitch_l=-pi/2,y_offset_l=initial_separation/2.0,z_offset_l=-0.02,
                     link_frame_l="l_wrist_back_frame",
-                    roll_r=pi/2,yaw_r=0,pitch_r=-pi/2,y_offset_r=-1*initial_separation/2.0,z_offset_r=-0.03, 
+                    roll_r=pi/2,yaw_r=0,pitch_r=-pi/2,y_offset_r=-1*initial_separation/2.0,z_offset_r=-0.02,
                     link_frame_r="r_wrist_back_frame",dur=2.0):
                 outcome = FAILURE
-            rospy.loginfo('Success is %s', outcome==SUCCESS)
+            rospy.loginfo('Smooth on table goto 2: Success is %s', outcome==SUCCESS)
             if not GripUtils.go_to_pts(point_l=self.location,grip_r=True, grip_l=True, point_r=self.location,
                     roll_l=pi/2,yaw_l=0,pitch_l=-pi/2,
-                    y_offset_l=(self.distance+initial_separation)/2.0, z_offset_l=-0.03,
+                    y_offset_l=(self.distance+initial_separation)/2.0, z_offset_l=-0.00,
                     link_frame_l="l_wrist_back_frame",
                     roll_r=pi/2,yaw_r=0,pitch_r=-pi/2,
-                    y_offset_r=-1*(self.distance+initial_separation)/2.0, z_offset_r=-0.03,
+                    y_offset_r=-1*(self.distance+initial_separation)/2.0, z_offset_r=-0.00,
                     link_frame_r="r_wrist_back_frame",dur=2.0):
                 outcome = FAILURE
-            rospy.loginfo('Success is %s', outcome==SUCCESS)
+            rospy.loginfo('Smooth on table goto 3: Success is %s', outcome==SUCCESS)
             GripUtils.recall_arm("b")
             return outcome
         else:
@@ -189,7 +189,8 @@ class SmoothOnTable(SuccessFailureState):
                 y_multiplier = -1
             else:
                 y_multiplier = 1
-            rospy.loginfo('arm is r, y multiplier is %s', y_multiplier)
+            rospy.loginfo('arm is %s, y multiplier is %s' % (self.arm, y_multiplier))
+            print 'Location: %s' % str(self.location)
             if not GripUtils.go_to_pt(point=self.location,grip=True,roll=pi/2,yaw=0,pitch=-pi/2,
                     z_offset=0.05,arm=self.arm,
                     link_frame="%s_wrist_back_frame"%self.arm,dur=4.0, verbose=True):
@@ -198,8 +199,10 @@ class SmoothOnTable(SuccessFailureState):
             if not GripUtils.go_to_pt(point=self.location,grip=True,roll=pi/2,yaw=0,pitch=-pi/2,
                     z_offset=-0.01,arm=self.arm,
                     link_frame="%s_wrist_back_frame"%self.arm,dur=2.0, verbose=True):
-                return FAILURE
+                #return FAILURE
+                pass
             rospy.loginfo('Step 3')
+            print 'Offset: %f' % (y_multiplier*self.distance) 
             if not GripUtils.go_to_pt(point=self.location,grip=True,roll=pi/2,yaw=0,pitch=-pi/2,
                     y_offset=y_multiplier*self.distance,z_offset=-0.01,arm=self.arm,
                     link_frame="%s_wrist_back_frame"%self.arm,dur=2.0, verbose=True):
@@ -345,7 +348,7 @@ class Sweep(SuccessFailureState):
 
         GripUtils.go_to(x=forward_amount,y=edge_y,z=self.lift_amount,
                 roll=roll,pitch=0,yaw=drag_yaw,grip=True,
-                frame="table_height",arm=drag_arm,dur=1.0)
+                frame="table_height",arm=drag_arm,dur=1.5)
         rospy.sleep(1.0) #Give time to stabilize
         if not GripUtils.go_to(x=forward_amount,y=edge_y,z=hover_amount,
                 roll=roll,pitch=pi/4,yaw=drag_yaw,grip=True,
