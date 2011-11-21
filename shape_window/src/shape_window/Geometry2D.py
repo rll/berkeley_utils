@@ -255,6 +255,29 @@ class Polygon(Shape):
     def vertices(self):
         return self.myVertices
             
+    def num_vertices(self):
+        return len(self.myVertices)
+
+    def neighboring_vertices(self,vertex):
+        """
+        takes a vertex and returns its neighbors in order
+        """
+        neighbors = []
+        index = self.myVertices.index(vertex)
+        # append preceding vertex
+        if(index == 0):
+            neighbors.append(self.myVertices[-1])
+        else:
+            neighbors.append(self.myVertices[index-1])
+        
+        # append succeeding vertex
+        if(index + 1 == self.num_vertices()):
+            neighbors.append(self.myVertices[0])
+        else:
+            neighbors.append(self.myVertices[index+1])
+
+        return neighbors
+
     def sides(self):
         segments = []
         vertices = self.vertices()
