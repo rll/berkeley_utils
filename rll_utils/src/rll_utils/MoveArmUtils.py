@@ -16,17 +16,31 @@ def arm_error_code_map():
     """Ugly one liner to get a reverse mapping for arm navigation error codes"""
     return dict((getattr(ArmNavigationErrorCodes, key), key) for key in filter(lambda x: x==x.upper(), dir(ArmNavigationErrorCodes)))
 
-def create_move_arm_goal(x, y, z, roll, pitch, yaw, frame='base_footprint', arm='r', target_link='%s_wrist_roll_link'):
+def create_move_arm_goal(x, y, z, roll, pitch, yaw, frame='base_footprint', arm='r',\
+    target_link='%s_wrist_roll_link', planning_service = '/ompl_planning/plan_kinematic_path',\
+    planner='SBLkConfig1'):
     """
     Populates a MoveArmGoal in a convenient manner.
+    
+    Possible arm planners for OMPL as of electric are listed below:
+      SBLkConfig1 (the default)
+      LBKPIECEkConfig1
+      RRTkConfig1
+      RRTConnectkConfig1
+      LazyRRTkConfig1
+      ESTkConfig1
+      KPIECEkConfig1
+      RRTStarkConfig1
+      BKPIECEkConfig1
+    For more information, see http://ompl.kavrakilab.org/availablePlanners.html
     """
     mg = MoveArmGoal()
     mg.motion_plan_request.group_name = ('right_arm' if arm == 'r' else 'left_arm')
     mg.motion_plan_request.num_planning_attempts = 5
-    mg.planner_service_name = '/ompl_planning/plan_kinematic_path'
+    mg.planner_service_name = planning_service
     mg.motion_plan_request.allowed_planning_time = rospy.Duration(100.0)
     mg.accept_partial_plans = True
-    #mg.motion_plan_request.planner_id = 'kinematic::RRT'
+    mg.motion_plan_request.planner_id = planner
     link_name = target_link
     try:
         link_name = target_link % arm
