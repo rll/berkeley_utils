@@ -8,6 +8,7 @@ from arm_navigation_msgs.msg import *
 from geometry_msgs.msg import *
 from trajectory_msgs.msg import JointTrajectory
 from control_msgs.msg import FollowJointTrajectoryActionGoal
+
 from math import pi
 import TFUtils
 
@@ -23,7 +24,7 @@ def create_move_arm_goal(x, y, z, roll, pitch, yaw, frame='base_footprint', arm=
     mg.motion_plan_request.group_name = ('right_arm' if arm == 'r' else 'left_arm')
     mg.motion_plan_request.num_planning_attempts = 5
     mg.planner_service_name = '/ompl_planning/plan_kinematic_path'
-    mg.motion_plan_request.allowed_planning_time = rospy.Duration(20.0)
+    mg.motion_plan_request.allowed_planning_time = rospy.Duration(100.0)
     mg.accept_partial_plans = True
     #mg.motion_plan_request.planner_id = 'kinematic::RRT'
     link_name = target_link
@@ -68,9 +69,15 @@ def send_move_arm_goal(mg):
     move_arm = actionlib.SimpleActionClient('/move_%s'%arm, MoveArmAction)
     move_arm.wait_for_server()
     move_arm.send_goal(mg)
+    counter = 0
     while move_arm.simple_state != 2:
         rospy.sleep(1.0)
+        counter = counter + 1
+        if counter % 20 == 0:
+            print counter, 'seconds have passed. State is', move_arm.get_state()
+    print 'Move arm server finished'
     result = move_arm.get_result()
+    print result
     if result.error_code.val != ArmNavigationErrorCodes.SUCCESS:
         print 'Motion planning failed with error', err_map[result.error_code.val]
     else:
@@ -80,6 +87,18 @@ def send_move_arm_goal(mg):
 def move_arm_simple(x, y, z, roll, pitch, yaw, frame, arm):
     mg = create_move_arm_goal(x, y, z, roll, pitch, yaw, frame, arm);
     return send_move_arm_goal(mg)
+
+def move_arm_pt(pt, roll, pitch, yaw, frame, arm):
+    mg = create_move_arm_goal(pt.x, pt.y, pt.z, roll, pitch, yaw, frame, arm);
+    return send_move_arm_goal(mg)
+
+def visualize_contacts(result):
+    """
+    This allows you to see where the planner reported contact with the collision
+    environment.
+    """
+    for contact in result.contacts:
+        print contact
 
 def test_move_arm():
     rospy.init_node('test_move_arm_py')
