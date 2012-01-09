@@ -29,6 +29,8 @@ class Point:
         self.yval = float(y)
         
     def __eq__(self,pt):
+        if pt == None or pt == False:
+            return False
         return floatEquals(self.x(),pt.x()) and floatEquals(self.y(), pt.y())
     
     def __str__(self):
@@ -142,6 +144,8 @@ class LineSegment(Line):
         return True
     
     def __eq__(self,seg):
+        if seg == None or self ==None:
+            return False
         if not Line.__eq__(self,seg):
             return False
         elif self.start() == seg.start() and self.end() == seg.end():
@@ -248,6 +252,19 @@ class Polygon(Shape):
             output += "%s\n"%side
         output += "}"
         return output
+
+    def __eq__(self,poly):
+
+        if type(self)!=type(poly):
+            return False
+
+        if len(self.sides()) != len(poly.sides()):
+            return False
+        else:
+            for side in self.sides():
+                if side not in poly.sides():
+                    return False
+        return True
         
     def isPolygon(self):
         return True 
@@ -404,9 +421,10 @@ def ptScale(pt,s):
     yscale = pt.y()*s
     return Point(xscale,yscale)
 
-def intersect(line1,line2):
+def intersect(line1,line2, bl = False):
     if line1.overlaps(line2):
         if not line1.isSegment() or not line2.isSegment():
+           # print "Lines are not segments"
             return False
         else:
             shared_pts = [pt for pt in line1.pts() if pt in line2.pts()]
@@ -417,11 +435,23 @@ def intersect(line1,line2):
     [a1, b1, c1] = line1.standardForm()
     [a2, b2, c2] = line2.standardForm()
     pt = intersectStandardForm([a1,b1,c1],[a2,b2,c2])
+#    print "Line 1 contains pt",line1.contains(pt), print "Line 2 contains pt", line2.contains(pt)
+
     if not pt:
+        #print "pt is null", pt
         return False
     if(line1.contains(pt) and line2.contains(pt)):
         return pt
     else:
+        pt = intersectStandardForm([a2,b2,c2], [a1, b1, c1])
+        if not pt:
+            #print "reversed pt is null", pt
+            return False
+        if(line1.contains(pt) and line2.contains(pt)):
+            return pt
+        #else:
+            #if(bl):
+             #   print "pt is", pt ,"Line 1 contains pt",line1.contains(pt), "Line 2 contains pt", line2.contains(pt)
         return False
         
 def intersectStandardForm(form1,form2):
@@ -443,8 +473,9 @@ def angleBetweenLines(line_from,line_to):
     a1 = line_from.a()
     a2 = line_to.a()
     b1 = line_from.b()
-    b2 = line_from.b()
+    b2 = line_to.b()
     angle = arccos((b1*b2+a1*a2)/(sqrt(b1**2+a1**2)*sqrt(b2**2+a2**2)))
+    return angle
     
 def safeArctan(num,denom):
     if denom == 0:
@@ -452,12 +483,34 @@ def safeArctan(num,denom):
     else:
         return arctan(num/denom)
    
-    
-    
+def movePt(pt,direction,distance):
+    x = pt.x()
+    y = pt.y()
+    if(direction == '-x'):   # moves up - away from the robot
+        x = pt.x() - distance
+    elif(direction == '+x'):
+        x = pt.x() + distance
+    elif(direction == '-y'):
+        y = pt.y() - distance
+    elif(direction == '+y'):
+        y = pt.y() + distance
+    return Point(x,y)
+
+def translatePt(pt,movex, movey):
+    pt.x = pt.x() + movex;
+    pt.y = pt.y() + movey;
+    return pt
+
 
 def mirrorPt(pt,line):
     displ = ptLineDisplacement(pt,line)
     return ptDiff(ptScale(displ.end(),2), displ.start())
+
+
+def mirrorLine(line, mirrorLine):
+    start = mirrorPt(line.start(), mirrorLine)
+    end = mirrorPt(line.end(), mirrorLine)
+    return DirectedLineSegment(start, end)
     
 def closestPtOnLine(pt,line):
     return ptLineDisplacement(pt,line).end()
@@ -487,7 +540,11 @@ def bisectLine(seg,bisector):
     end = seg.end()
     inter = intersect(seg,bisector)
     if not inter or not (seg.contains(inter) and bisector.contains(inter)) or inter == end:
+        #print "inter", inter#"seg contains inter ", seg.contains(inter), "bisector contains inter", bisector.contains(inter), "inter end", end
+        if not inter:
+            intersect(seg, bisector, True)
         return False
+    #print "Intersection Pt is" ,inter
     line1 = LineSegment(start,inter)
     line2 = LineSegment(inter,end)
     return [line1,line2]
@@ -516,6 +573,7 @@ def bisectLineByPts2(seg,pts):
     output.append(LineSegment(start,seg.end()))
     return output
 
+
     
 def bisectPoly(poly,bisector):
     poly1 = True
@@ -523,7 +581,9 @@ def bisectPoly(poly,bisector):
     lines2 = []
     inters = []
     for seg in poly.sides():
+        #print "Current Segment is:",  seg, "bisector " , bisector
         lines = bisectLine(seg,bisector)
+        #print "BisectLine returns" , lines
         if lines:
             [line1,line2] = lines
             if(poly1):
@@ -544,6 +604,7 @@ def bisectPoly(poly,bisector):
             else:
                 lines2.append(seg)
     if(len(inters) < 2):
+        #print "inters < 2"
         return [poly,False]
     if(len(inters) >= 2):
         line = LineSegment(inters[0],inters[1])
@@ -580,7 +641,10 @@ def bisectPoly(poly,bisector):
 def mirrorPoly(poly,line):
     pts = [mirrorPt(pt,line) for pt in poly.vertices()]
     return Polygon(*pts)
-    
+
+def movePoly(poly,direction,distance):
+    pts = [movePt(pt,direction,distance) for pt in poly.vertices()]
+    return Polygon(*pts)
 
     
 def findNearestPt(pt,pts):
@@ -661,3 +725,7 @@ def getBoundingArea(segs):
                  pts.append(pt)
     (xRange,yRange) = getBoundingBox(pts)
     return len(xRange) * len(yRange)
+
+def getBoundingAreaPts(pts):
+    (xRange, yRange) = getBoundingBox(pts)
+    return len(xRange)*len(yRange)
