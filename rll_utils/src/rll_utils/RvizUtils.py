@@ -33,7 +33,26 @@ def place_marker(point, pub, _id=0, _type=Marker.CUBE, ns='basic_shapes',\
     marker.text = text
     marker.lifetime = rospy.Duration()
     pub.publish(marker)
-#    rospy.loginfo("Placed a marker")
+
+def place_marker_pose(posestamped, pub, _id=0, _type=Marker.CUBE, ns='basic_shapes',\
+        r=0, g=1, b=0, a=1, xscale=.03, yscale=.03, zscale=.03,\
+        orientation=Quaternion(0,0,0,1), text=''):
+    marker = Marker(type=_type, action=Marker.ADD)
+    marker.ns = ns
+    marker.header.frame_id = posestamped.header.frame_id
+    marker.header.stamp = rospy.Time.now()
+    marker.pose = posestamped.pose
+    marker.scale.x = xscale
+    marker.scale.y = yscale
+    marker.scale.z = zscale
+    marker.color.r = r
+    marker.color.g = g
+    marker.color.b = b
+    marker.color.a = a
+    marker.id = _id
+    marker.text = text
+    marker.lifetime = rospy.Duration()
+    pub.publish(marker)
 
 def place_arrow(point, pub, _id, ns='basic_shapes', rgb=(0, 1, 0), scale=(0.1, 0.1, 0.1), orientation=Quaternion(0,0,0,1),text=''):
     place_marker(point, pub, _id, Marker.ARROW, ns=ns, r=rgb[0], g=rgb[1], b=rgb[2],\
