@@ -131,4 +131,4 @@ def rotate_by_quaternion(v3, q):
     q = np.mat(transformations.quaternion_matrix(q))
     v = q*v
     v = v[0:3]
-    return v
+    return v.T
