@@ -15,7 +15,7 @@
   <depend package="cv_bridge"/>
   <depend package="sensor_msgs"/>
   <depend package="actionlib" />
-  <depend package="arm_navigation_msgs" />
+  <!--<depend package="arm_navigation_msgs" />-->
   <depend package="trajectory_msgs" />
   <depend package="control_msgs" />
  <export>
