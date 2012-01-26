@@ -128,7 +128,8 @@ def rotate_by_quaternion(v3, q):
     # Takes numpy arrays as arguments
     v = np.mat(np.hstack((v3, 1.0)))
     v = v.T
-    q = np.mat(transformations.quaternion_matrix([q[3], q[0], q[1], q[2]]))
+    #q = np.mat(transformations.quaternion_matrix([q[3], q[0], q[1], q[2]]))
+    q = np.mat(transformations.quaternion_matrix(q))
     v = q*v
     v = v[0:3]
     return v.T
