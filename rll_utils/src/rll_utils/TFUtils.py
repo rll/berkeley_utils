@@ -5,6 +5,7 @@ import rospy
 from tf import TransformListener, Exception as TFException, transformations
 from geometry_msgs.msg import PointStamped,Point,PoseStamped,Pose,QuaternionStamped,Quaternion
 from numpy import array as nparray
+import numpy as np
 
 ##  Decorator which, when added, tries the execute a function max_tries times, before
 #   throwing an error.
@@ -117,3 +118,22 @@ def stamp(el):
 
 def set_frame(el,frame):
     el.header.frame_id = frame
+
+def quaternion_multiply(q1, q2):
+    return transformations.quaternion_multiply(np.array([q1[3], q1[0], q1[1], q1[2]]),
+            np.array([q2[3], q2[0], q2[1], q2[2]]))
+
+def rotate_by_quaternion(v3, q):
+    # Rotate 3D vector by quaternion
+    # Takes numpy arrays as arguments
+    v = np.mat(np.hstack((v3, 1.0)))
+    v = v.T
+    q = np.mat(transformations.quaternion_matrix([q[3], q[0], q[1], q[2]]))
+    v = q*v
+    v = v[0:3]
+    return v.T
+
+def inverse_pose_transform(pose):
+    t = point_to_array(pose.position)
+
+    

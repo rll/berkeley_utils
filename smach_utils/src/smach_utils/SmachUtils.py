@@ -106,9 +106,9 @@ class Smooth(SuccessFailureState):
                     ,link_frame_r="r_wrist_back_frame",dur=4.0):
                 return FAILURE
             if not GripUtils.go_to_pts(point_l=self.location,grip_r=True, grip_l=True, point_r=self.location,
-                    roll_l=pi/2,yaw_l=0,pitch_l=-pi/2,y_offset_l=initial_separation/2.0,z_offset_l=-0.03, 
+                    roll_l=pi/2,yaw_l=0,pitch_l=-pi/2,y_offset_l=initial_separation/2.0,z_offset_l=-0.04, 
                     link_frame_l="l_wrist_back_frame",
-                    roll_r=pi/2,yaw_r=0,pitch_r=-pi/2,y_offset_r=-1*initial_separation/2.0,z_offset_r=-0.03, 
+                    roll_r=pi/2,yaw_r=0,pitch_r=-pi/2,y_offset_r=-1*initial_separation/2.0,z_offset_r=-0.04, 
                     link_frame_r="r_wrist_back_frame",dur=2.0):
                 return FAILURE
             if not GripUtils.go_to_pts(point_l=self.location,grip_r=True, grip_l=True, point_r=self.location,
