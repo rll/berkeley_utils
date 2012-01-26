@@ -9,6 +9,20 @@ from rll_utils.TFUtils import rpy_to_quaternion, quaternion_to_array,\
         array_to_quaternion
 from math import pi
 
+class MarkerPlacer(object):
+    def __init__(self):
+        self.pub = rospy.Publisher('visualization_marker', Marker)
+        
+    def place_marker(self, point, _id=0, _type=Marker.CUBE, ns='basic_shapes',\
+        r=0, g=1, b=0, a=1, xscale=.03, yscale=.03, zscale=.03,\
+        orientation=Quaternion(0,0,0,1), text=''):
+        
+        place_marker(point, self.pub, _id, _type, ns, r, g, b, a, xscale, \
+        yscale, zscale, orientation, text)
+
+    def place_arrow(self, point, _id, ns='basic_shapes', rgb=(0, 1, 0), scale=(0.1, 0.1, 0.1), orientation=Quaternion(0,0,0,1),text=''):
+        place_arrow(point, self.pub, _id, ns, rgb, scale, orientation, text)
+        
 def place_marker(point, pub, _id=0, _type=Marker.CUBE, ns='basic_shapes',\
         r=0, g=1, b=0, a=1, xscale=.03, yscale=.03, zscale=.03,\
         orientation=Quaternion(0,0,0,1), text=''):
