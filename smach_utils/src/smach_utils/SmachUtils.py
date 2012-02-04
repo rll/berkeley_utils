@@ -460,7 +460,7 @@ class ShakeBothArms(SuccessFailureState):
 
     def execute(self, userdata):
 
-        cloth_width     = userdata.cloth_width*.85
+        cloth_width     = userdata.cloth_width*.90
 
         if cloth_width < MINIMUM_SHAKE_WIDTH:
             rospy.logwarn("Cannot shake at less than %s m apart; tried to do %d" % (MINIMUM_SHAKE_WIDTH, cloth_width))
