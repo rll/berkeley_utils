@@ -221,7 +221,7 @@ class SpreadOut(SuccessFailureState):
         
     def execute(self,userdata):
         #cloth_width = userdata.cloth_width*.85
-        cloth_width = userdata.cloth_width * 0.925
+        cloth_width = userdata.cloth_width * 0.885
         cloth_height = userdata.cloth_height
         start_x = 0.20
         end_x  = start_x + self.forward_amount
