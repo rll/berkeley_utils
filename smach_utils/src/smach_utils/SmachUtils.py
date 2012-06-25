@@ -6,6 +6,7 @@ from smach import State, StateMachine
 from smach_ros import SimpleActionState
 from numpy import pi,abs
 from geometry_msgs.msg import PointStamped
+from smach_utils.brett_talk import *
 import rospy
 SUCCESS = 'success'
 FAILURE = 'failure'
@@ -335,11 +336,13 @@ class Sweep(SuccessFailureState):
         forward_amount = self.forward_amount
         hover_amount = 0.06
         if self.direction == "r":
+            pr2_say(talk_drag2)
             drag_arm = "r"
             edge_y = self.table_width / 2.0
             drag_yaw = pi/2
             final_y = edge_y - self.drag_amount
         else:
+            pr2_say(talk_drag1)
             drag_arm = "l"
             edge_y = -1 * self.table_width / 2.0
             drag_yaw = -pi/2
@@ -509,7 +512,6 @@ class ArmsUp(SuccessFailureState):
         height = 0.35
         lateral_amount = 0.65
         forward_amount = 0.3
-
         if not GripUtils.go_to_multi(   x_l=forward_amount, y_l=lateral_amount, z_l=height,
                                         roll_l=0, pitch_l=0, yaw_l=0, grip_l=self.grip,
                                         x_r=forward_amount, y_r=-lateral_amount, z_r=height,
