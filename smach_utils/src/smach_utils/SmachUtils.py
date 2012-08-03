@@ -243,9 +243,9 @@ class SpreadOut(SuccessFailureState):
                                             roll_r=0,pitch_r=pi/4,yaw_r=pi/2,grip_r=True,
                                             frame_l="table_height",frame_r="table_height",dur=3.0):
                 return_val = FAILURE
-            if not GripUtils.go_to_multi(x_l=(start_x + end_x)/2.0,y_l=cloth_width/2.0,z_l=0.25*up_height + 0.75*down_height,
+            if not GripUtils.go_to_multi(x_l=(start_x + end_x)/2.5,y_l=cloth_width/2.0,z_l=0.25*up_height + 0.75*down_height,
                                             roll_l=0,pitch_l=pi/4,yaw_l=-pi/2,grip_l=True,
-                                            x_r=(start_x+end_x)/2.0,y_r=-cloth_width/2.0,z_r=0.25*up_height + 0.75*down_height,
+                                            x_r=(start_x+end_x)/2.5,y_r=-cloth_width/2.0,z_r=0.25*up_height + 0.75*down_height,
                                             roll_r=0,pitch_r=pi/4,yaw_r=pi/2,grip_r=True,
                                             frame_l="table_height",frame_r="table_height",dur=3.0):
                 return_val = FAILURE
@@ -273,18 +273,18 @@ class SpreadOut(SuccessFailureState):
                                             roll_r=0,pitch_r=pi/4,yaw_r=pi/2,grip_r=True,
                                             frame_l="table_height",frame_r="table_height",dur=3.0):
                 return_val = FAILURE
-            if not GripUtils.go_to_multi(x_l=end_x - 0.1 - cloth_height/2.0,y_l=cloth_width/2.0,z_l=cloth_height/2.0+down_height+0.03,
+            if not GripUtils.go_to_multi(x_l=end_x - 0.1 - cloth_height/1.5,y_l=cloth_width/2.0,z_l=cloth_height/1.5+down_height+0.03,
                                             roll_l=0,pitch_l=pi/4,yaw_l=-pi/2,grip_l=True,
-                                            x_r=end_x - 0.1 - cloth_height/2.0,y_r=-cloth_width/2.0,z_r=cloth_height/2.0+down_height+0.03,
+                                            x_r=end_x - 0.1 - cloth_height/1.5,y_r=-cloth_width/2.0,z_r=cloth_height/1.5+down_height+0.03,
                                             roll_r=0,pitch_r=pi/4,yaw_r=pi/2,grip_r=True,
                                             frame_l="table_height",frame_r="table_height",dur=3.0):
                 return_val = FAILURE
             
             
             
-            if not GripUtils.go_to_multi(x_l=end_x-0.1,y_l=cloth_width/2.0,z_l=down_height+0.03,
+            if not GripUtils.go_to_multi(x_l=end_x-0.1,y_l=cloth_width/2.0,z_l=down_height+0.1,
                                         roll_l=0,pitch_l=pi/4,yaw_l=-pi/2,grip_l=True,
-                                        x_r=end_x-0.1,y_r=-cloth_width/2.0,z_r=down_height+0.03,
+                                        x_r=end_x-0.1,y_r=-cloth_width/2.0,z_r=down_height+0.1,
                                         roll_r=0,pitch_r=pi/4,yaw_r=pi/2,grip_r=True,
                                         frame_l="table_height",frame_r="table_height",dur=3.0):
                 return_val = FAILURE
