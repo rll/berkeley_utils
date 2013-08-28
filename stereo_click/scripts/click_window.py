@@ -123,8 +123,8 @@ class ClickWindow:
 	def zoomPt(self,x,y):
 		uncentered_x = x - self.offset[0]
 		uncentered_y = y - self.offset[1]
-		x = uncentered_x * self.zoom
-		y = uncentered_y * self.zoom
+		x = int(uncentered_x * self.zoom)
+		y = int(uncentered_y * self.zoom)
 		return (x,y)
 			
 	## Publishes the proper point and camera information to the given topic
@@ -146,7 +146,7 @@ class ClickWindow:
 		cv.GetRectSubPix(bgimg,smallimg,(self.background.width/(2*self.zoom)+self.offset[0],self.background.height/(2*self.zoom)+self.offset[1]))
 		cv.Resize(smallimg,img)
 		if(self.cp != False):
-			cv.Circle(img,self.zoomPt(self.cp.x,self.cp.y),3,cv.RGB(0,255,0),-1)
+			cv.Circle(img,self.zoomPt(int(self.cp.x),int(self.cp.y)),3,cv.RGB(0,255,0),-1)
 
 		cv.Line(img,(self.ch_x-25,self.ch_y),(self.ch_x+25,self.ch_y),cv.RGB(255,255,0))
 		cv.Line(img,(self.ch_x,self.ch_y-25),(self.ch_x,self.ch_y+25),cv.RGB(255,255,0))
